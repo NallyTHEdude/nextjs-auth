@@ -1,21 +1,48 @@
 "use client";
 import Link from 'next/link';
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import { useRouter } from 'next/navigation';
-// import {axios} from 'axios';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 
 function SignUpPage() {
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
   const [user, setUser] = useState({
     username: '',
     email: '',
     password: ''
   });
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
-  // TODO: Implement the sign-up logic using axios to send a POST request to the backend API
   const onSignUp = async () => {
+    try{
+      setLoading(true);
+      const response = await axios.post('/api/users/signup', user);
+      if(response.status >= 200){ 
+        toast.success("Signup successful! Please log in.");
+        setTimeout(()=>{
+          router.push('/login');
 
+        }, 1000);
+      }
+    } catch (error: any) {
+      console.log("Signup Failed: ", error.message);
+      toast.error(error.message || "Signup failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() =>{
+    if(user.email.length >0 && user.password.length > 0 && user.username.length > 0){
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }, [user]);
 
   return (
   <div className="flex items-center justify-center min-h-screen bg-gray-900 px-4">
@@ -69,10 +96,10 @@ function SignUpPage() {
 
       {/* Signup Button */}
       <button
-        onClick={onSignUp}
-        className="w-full bg-white text-gray-900 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
+        onClick = {!buttonDisabled ? onSignUp: undefined}
+        className={` w-full bg-white text-gray-900 py-3 rounded-lg font-semibold hover:bg-gray-200 transition ${buttonDisabled ? "hover:none opacity-30" : "cursor-pointer"}`}
       >
-        Sign Up
+        {loading ? "Loading..." : "Sign Up"}
       </button>
 
       {/* Login Redirect */}
