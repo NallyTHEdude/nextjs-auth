@@ -2,18 +2,33 @@
 import Link from 'next/link';
 import React,{useState} from 'react'
 import { useRouter } from 'next/navigation';
-// import {axios} from 'axios';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 
 function LoginPage() {
+  const router = useRouter();
   const [user, setUser] = useState({
     email: '',
     password: ''
   });
+  const [loading, setLoading] = useState(false);
 
-  // TODO: Implement the login logic using axios to send a POST request to the backend API
   const onLogin = async () => {
-
+    try {
+      setLoading(true);
+      const response = await axios.post('/api/users/login', user);
+      // console.log("\nINFO: Login Response: ", response.data);
+      toast.success("Login successful!");
+      setTimeout(() => {
+        router.push('/profile');
+      }, 1000); 
+    } catch (error: any) {
+      // console.error("\n Error: something went wrong while logging in the user: ", error);
+      toast.error("Login failed: kindly check your credentials and try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,7 +72,7 @@ function LoginPage() {
         onClick={onLogin}
         className="w-full bg-white text-gray-900 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
       >
-        Login
+        {loading ? "Logging in..." : "Login"}
       </button>
 
       {/* Login Redirect */}
