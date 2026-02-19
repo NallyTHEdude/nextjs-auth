@@ -21,15 +21,15 @@ function SignUpPage() {
     try{
       setLoading(true);
       const response = await axios.post('/api/users/signup', user); 
-      // console.log("RESPONSE DATA IS: ",response.data);
+      console.log("RESPONSE DATA IS: ",response.data);
         toast.success("Signup successful! Please log in.");
         setTimeout(()=>{
           router.push('/login');
 
         }, 1000);
     } catch (error: any) {
-      console.log("Signup Failed: ", error.message);
-      toast.error(error.message || "Signup failed. Please try again.");
+      // console.log("Signup Failed: ", error.response?.data?.message);
+      toast.error(error.response?.data?.message || "Signup failed. Please try again.");
     } finally {
       setLoading(false);
     }
