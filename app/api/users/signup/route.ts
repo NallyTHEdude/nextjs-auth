@@ -17,6 +17,8 @@ export async function POST(request: NextRequest) {
         if (!email) throw new Error("Email is required");
         if (!password) throw new Error("Password is required");
 
+        console.log("INFO: Received signup request with data: ", reqBody);
+
         // is user already exists
         const user:any = await User.findOne({ email });
         if (user) {
@@ -38,8 +40,7 @@ export async function POST(request: NextRequest) {
             password: hashedPassword
         });
         const savedUser = await newUser.save();
-
-        print("New user created", savedUser);
+        console.log("INFO: New user created", savedUser);
 
         // Return success response (do not include password)
         return NextResponse.json(
