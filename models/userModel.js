@@ -4,13 +4,13 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: [true, "Please Provide a username"],
-        unique: true,
+        unique: [true, "Username already exists"],
     },
 
     email: {
         type: String,
         required: [true, "Please Provide an email"],
-        unique: true,
+        unique: [true, "Email already exists"],
     },
 
     password: {
