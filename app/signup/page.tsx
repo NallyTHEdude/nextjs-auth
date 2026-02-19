@@ -21,7 +21,7 @@ function SignUpPage() {
     try{
       setLoading(true);
       const response = await axios.post('/api/users/signup', user); 
-      console.log("RESPONSE DATA IS: ",response.data);
+      // console.log("RESPONSE DATA IS: ",response.data);
         toast.success("Signup successful! Please log in.");
         setTimeout(()=>{
           router.push('/login');
