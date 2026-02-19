@@ -20,14 +20,13 @@ function SignUpPage() {
   const onSignUp = async () => {
     try{
       setLoading(true);
-      const response = await axios.post('/api/users/signup', user);
-      if(response.status >= 200){ 
+      const response = await axios.post('/api/users/signup', user); 
+      // console.log("RESPONSE DATA IS: ",response.data);
         toast.success("Signup successful! Please log in.");
         setTimeout(()=>{
           router.push('/login');
 
         }, 1000);
-      }
     } catch (error: any) {
       console.log("Signup Failed: ", error.message);
       toast.error(error.message || "Signup failed. Please try again.");

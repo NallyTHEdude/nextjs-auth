@@ -17,14 +17,24 @@ export async function POST(request: NextRequest) {
         if (!email) throw new Error("Email is required");
         if (!password) throw new Error("Password is required");
 
-        console.log("INFO: Received signup request with data: ", reqBody);
+        console.log("\nINFO: Received signup request with data: ", reqBody);
 
-        // is user already exists
-        const user:any = await User.findOne({ email });
-        if (user) {
-            console.error("ERROR: User already exists with this email: ", email);
+        // if user with email already exists
+        const userEmail:any = await User.findOne({ email });
+        if (userEmail) {
+            console.error("\nERROR: User already exists with this email", email);
             return NextResponse.json(
                 { message: "User already exists with this email" },
+                { status: 400 }
+            );
+        }
+
+        // if user with username already exists
+        const userUsername:any = await User.findOne({ username });
+        if (userUsername) {
+            console.error("\nERROR: User already exists username: ", username);
+            return NextResponse.json(
+                { message: "User already exists with this username" },
                 { status: 400 }
             );
         }
@@ -40,7 +50,7 @@ export async function POST(request: NextRequest) {
             password: hashedPassword
         });
         const savedUser = await newUser.save();
-        console.log("INFO: New user created", savedUser);
+        console.log("\nINFO: New user created", savedUser);
 
         // Return success response (do not include password)
         return NextResponse.json(
