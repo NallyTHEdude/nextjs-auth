@@ -3,6 +3,7 @@ import User from "@/models/userModel";
 import { NextRequest, NextResponse} from "next/server";
 import bcrypt from "bcryptjs";
 import print from "@/helpers/print.helper";
+import { Console } from "console";
 
 
 connect();
@@ -17,13 +18,12 @@ export async function POST(request: NextRequest) {
         if (!email) throw new Error("Email is required");
         if (!password) throw new Error("Password is required");
 
-        print("Request body is", reqBody);
-
         // is user already exists
         const user:any = await User.findOne({ email });
         if (user) {
+            console.error("ERROR: User already exists with this email: ", email);
             return NextResponse.json(
-                { error: "User already exists with this email" },
+                { message: "User already exists with this email" },
                 { status: 400 }
             );
         }
@@ -55,8 +55,9 @@ export async function POST(request: NextRequest) {
             { status: 201 }
         );
     } catch (error: any) {
+        console.error("Error: something went wrong while signing up the user: ", error.message);
         return NextResponse.json(
-            { error: error.message || "Something went wrong while signing up the user" },
+            { message: error.message || "Something went wrong while signing up the user" },
             { status: 500 }
         );
     }
